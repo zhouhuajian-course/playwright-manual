@@ -145,4 +145,33 @@ $ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="
 $ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install webkit"
 # 查看所有支持的浏览器
 $ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --help"
-``` 
+```
+9. 根据环境变量 `BROWSER` 使用不同浏览器
+```java
+package com.company.demo;
+
+import com.microsoft.playwright.*;
+
+public class Demo01 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = null;
+      String browserName = System.getenv("BROWSER");
+      BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(false);
+      if (browserName.equals("chromium")) {
+        browser = playwright.chromium().launch(options);
+      } else if (browserName.equals("firefox")) {
+        browser = playwright.firefox().launch(options);
+      } else if (browserName.equals("webkit")) {
+        browser = playwright.webkit().launch(options);
+      }
+      Page page = browser.newPage();
+      page.navigate("http://localhost:8080/todo/index.html");
+      System.out.println(page.title());
+      page.waitForTimeout(5000);
+    }
+  }
+}
+```
+10. 不同版本的 playwright 使用不同版本的 playwright 构建的 浏览器 例如 `chromium-1129` `chromium-1097` 其中版本号是 playwright 构建浏览器的版本号，不是浏览器本身的版本号
+11. 

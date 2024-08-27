@@ -118,3 +118,31 @@ public class InterceptNetworkRequests {
 // http://192.168.30.1:3000/assets/index-DuZ2DQuV.js
 // http://192.168.30.1:3000/assets/index-7V1J10Kq.css
 ```
+5. 打印页面title
+```java
+package org.example;
+
+import com.microsoft.playwright.*;
+
+public class App {
+    public static void main(String[] args) {
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.chromium().launch();
+            Page page = browser.newPage();
+            page.navigate("http://playwright.dev");
+            System.out.println(page.title());
+        }
+    }
+}
+```
+6. 浏览器上下文， Browser context is equivalent to a brand new browser profile.浏览器上下文，等同于一个全新的浏览器配置文件。可以 保存上下文的身份验证状态并在所有测试中重复使用。
+7. `mvn compile exec:java -D exec.mainClass="org.example.App"` 运行它会下载 Playwright 包并安装 Chromium、Firefox 和 WebKit 的浏览器二进制文件。
+8. 安装浏览器
+```bash
+# 安装默认浏览器
+$ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install"
+# 安装特定浏览器
+$ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install webkit"
+# 查看所有支持的浏览器
+$ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --help"
+``` 

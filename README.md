@@ -275,3 +275,32 @@ public interface PlaywrightAssertions {
   }
 }
 ```
+
+```java
+package com.company.demo;
+
+import java.util.regex.Pattern;
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+public class Demo03 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+      Page page = browser.newPage();
+      page.navigate("http://localhost:8080/todo/index.html");
+
+      assertThat(page).hasTitle(Pattern.compile("TodoMVC"));
+
+      Locator input = page.getByPlaceholder("What needs to be done?");
+
+      assertThat(input).hasAttribute("class", "new-todo");
+      input.fill("Learn playwright!");
+      input.press("Enter");
+      page.waitForTimeout(5000);
+    }
+  }
+}
+```

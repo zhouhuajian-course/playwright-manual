@@ -174,4 +174,104 @@ public class Demo01 {
 }
 ```
 10. 不同版本的 playwright 使用不同版本的 playwright 构建的 浏览器 例如 `chromium-1129` `chromium-1097` 其中版本号是 playwright 构建浏览器的版本号，不是浏览器本身的版本号
-11. 
+11. 浏览器使用 chromium 可以尽早发现问题，等 chrome 或 edge 发布前修复，但 `话虽如此，测试政策通常要求针对当前公开可用的浏览器进行回归测试。在这种情况下，您可以选择其中一个稳定渠道，"chrome"或者"msedge"。` `Google Chrome 和 Microsoft Edge 尊重企业政策，其中包括对功能、网络代理、强制扩展的限制，这些都会阻碍测试。因此，如果您是使用此类政策的组织的一部分，最简单的方法是使用捆绑的 Chromium 进行本地测试，您仍然可以选择加入通常不受此类限制的机器人的稳定渠道。` 如何选择浏览器 参考 `https://playwright.dev/java/docs/browsers#when-to-use-google-chrome--microsoft-edge-and-when-not-to`
+12. 浏览器安装位置 `PLAYWRIGHT_BROWSERS_PATH`
+```text
+Playwright 将 Chromium、WebKit 和 Firefox 浏览器下载到特定于操作系统的缓存文件夹中：
+
+%USERPROFILE%\AppData\Local\ms-playwright在 Windows 上
+~/Library/Caches/ms-playwright哪里 macOS
+~/.cache/ms-playwright在 Linux 上
+这些浏览器安装后将占用几百兆的磁盘空间：
+
+du -hs ~/Library/Caches/ms-playwright/*
+281M  chromium-XXXXXX
+187M  firefox-XXXX
+180M  webkit-XXXX
+
+您可以使用环境变量覆盖默认行为。安装 Playwright 时，要求它将浏览器下载到特定位置
+
+PowerShell
+$Env:PLAYWRIGHT_BROWSERS_PATH="$Env:USERPROFILE\pw-browsers"
+$Env:PLAYWRIGHT_BROWSERS_PATH="E:\playwright"
+mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install"
+
+运行 Playwright 时，也要设置环境变量 PLAYWRIGHT_BROWSERS_PATH，这样才能搜索到 浏览器
+```
+13. 卸载浏览器 `https://playwright.dev/java/docs/browsers#uninstall-browsers` `mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="uninstall --all"`
+14. 设置浏览器无头模式 `默认情况下，Playwright 以无头模式运行浏览器。` `playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(50));`
+15. 减慢执行速度 单位毫秒 `setSlowMo()` `playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(50));` `https://javadoc.io/doc/com.microsoft.playwright/playwright/latest/com/microsoft/playwright/BrowserType.LaunchOptions.html#setSlowMo(double)`
+16. 使用 `mvn` 的方式执行 ` mvn compile exec:java -D exec.mainClass="com.company.demo.Demo02"`
+17. 系统要求，例如 Java 版本要求 `https://playwright.dev/java/docs/intro#system-requirements`
+18. `检查会自动重试，直到满足必要条件。Playwright 内置了自动等待功能，这意味着它会在执行操作之前等待元素可操作。`
+19. 使用 `assertThat` 进行断言
+```java
+package org.example;
+
+import java.util.regex.Pattern;
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+public class App {
+    public static void main(String[] args) {
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.chromium().launch();
+            Page page = browser.newPage();
+            page.navigate("http://playwright.dev");
+
+            // Expect a title "to contain" a substring.
+            assertThat(page).hasTitle(Pattern.compile("Playwright"));
+
+            // create a locator
+            Locator getStarted = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Get Started"));
+
+            // Expect an attribute "to be strictly equal" to the value.
+            assertThat(getStarted).hasAttribute("href", "/docs/intro");
+
+            // Click the get started link.
+            getStarted.click();
+
+            // Expects page to have a heading with the name of Installation.
+            assertThat(page.getByRole(AriaRole.HEADING,
+               new Page.GetByRoleOptions().setName("Installation"))).isVisible();
+        }
+    }
+}
+```
+20. assertThat 传不同的 对象 ，断言方法也不同，例如 `Page` `Locator` `APIResponse`
+```java
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package com.microsoft.playwright.assertions;
+
+import com.microsoft.playwright.APIResponse;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.impl.APIResponseAssertionsImpl;
+import com.microsoft.playwright.impl.AssertionsTimeout;
+import com.microsoft.playwright.impl.LocatorAssertionsImpl;
+import com.microsoft.playwright.impl.PageAssertionsImpl;
+
+public interface PlaywrightAssertions {
+  static APIResponseAssertions assertThat(APIResponse response) {
+    return new APIResponseAssertionsImpl(response);
+  }
+
+  static LocatorAssertions assertThat(Locator locator) {
+    return new LocatorAssertionsImpl(locator);
+  }
+
+  static PageAssertions assertThat(Page page) {
+    return new PageAssertionsImpl(page);
+  }
+
+  static void setDefaultAssertionTimeout(double timeout) {
+    AssertionsTimeout.setDefaultTimeout(timeout);
+  }
+}
+```

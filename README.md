@@ -137,7 +137,7 @@ public class App {
 ```
 6. 浏览器上下文， Browser context is equivalent to a brand new browser profile.浏览器上下文，等同于一个全新的浏览器配置文件。可以 保存上下文的身份验证状态并在所有测试中重复使用。
 7. `mvn compile exec:java -D exec.mainClass="org.example.App"` 运行它会下载 Playwright 包并安装 Chromium、Firefox 和 WebKit 的浏览器二进制文件。
-8. 安装浏览器
+8. 安装浏览器 `https://playwright.dev/java/docs/browsers#install-browsers`
 ```bash
 # 安装默认浏览器
 $ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install"

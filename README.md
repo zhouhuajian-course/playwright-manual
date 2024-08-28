@@ -453,7 +453,7 @@ public class Lesson01 {
 }
 ```
 27. 设置录制视频的大小 `Browser.NewContextOptions options = new Browser.NewContextOptions().setRecordVideoDir(Paths.get("videos/")).setRecordVideoSize(1920, 1080);`
-28. Mock API
+28. Mock API。page.route() 传字符串URL时，需要精准匹配，即使后面的?也要加上，当然这个例子可以优化
 ```java
 package learn;
 

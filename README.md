@@ -416,3 +416,72 @@ public class Demo04 {
   }
 }
 ```
+26. 录制视频
+```java
+package learn;
+
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.*;
+
+import java.nio.file.Paths;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+public class Lesson01 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
+              .setHeadless(false));
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setRecordVideoDir(Paths.get("videos/")));
+
+      Page page = context.newPage();
+      page.navigate("http://localhost/article-add.html");
+      page.waitForTimeout(3000);
+      page.getByPlaceholder("标题").fill("这是标题");
+      page.waitForTimeout(3000);
+      page.getByPlaceholder("内容").fill("这是内容");
+      page.waitForTimeout(3000);
+      page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("提交")).click();
+      page.waitForTimeout(3000);
+      assertThat(page.getByRole(AriaRole.HEADING)).containsText("添加成功");
+      page.waitForTimeout(3000);
+
+      // Make sure to close, so that videos are saved.
+      context.close();
+    }
+  }
+}
+```
+27. 设置录制视频的大小 `Browser.NewContextOptions options = new Browser.NewContextOptions().setRecordVideoDir(Paths.get("videos/")).setRecordVideoSize(1920, 1080);`
+28. Mock API
+```java
+package learn;
+
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.*;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+public class Lesson02 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
+              .setHeadless(false));
+      BrowserContext context = browser.newContext();
+      Page page = context.newPage();
+      page.navigate("http://localhost/transfer.html");
+      page.route("http://localhost/transfer?", route -> {
+        // route.fulfill(RequestOptions.create().setData("添加成功！Mock API"));
+        System.out.println("测试");
+        route.fulfill(new Route.FulfillOptions().setBody("Success! Mock!"));
+      });
+      page.getByRole(AriaRole.TEXTBOX).click();
+      page.getByRole(AriaRole.TEXTBOX).fill("小周");
+      page.getByRole(AriaRole.SPINBUTTON).click();
+      page.getByRole(AriaRole.SPINBUTTON).fill("100");
+      page.waitForTimeout(5000);
+      page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("提交")).click();
+      page.waitForTimeout(5000);
+    }
+  }
+}
+```

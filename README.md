@@ -304,3 +304,115 @@ public class Demo03 {
   }
 }
 ```
+21. `Playwright 有一个BrowserContext的概念，它是一个内存中隔离的浏览器配置文件。建议为每个测试创建一个新的BrowserContext，以确保它们不会互相干扰。`
+22. 启动 代码生成器 `Codegen` `mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="codegen demo.playwright.dev/todomvc"`
+23. `codegen` 优先考虑角色 role、文本 text 和测试 ID 定位器，`如果生成器识别出与定位器匹配的多个元素，它将改进定位器以使其具有弹性并唯一地标识目标元素，从而消除和减少由于定位器而导致的测试失败和flaking。`。完成后关闭 Playwright 检查器窗口或停止终端命令。
+```text
+'assert visibility'断言某个元素可见
+'assert text'断言元素包含特定文本
+'assert value'断言某个元素有特定的值
+```
+24. 使用 `JUnit` 并且每个测试都有自己的 `BrowserContext` 和 `Page`，不同的上下文，其实做了重新启动浏览器的操作，关闭窗口，重新启动了，使用了不同配置
+```java
+package com.company;
+
+import com.microsoft.playwright.*;
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class Demo04 {
+  // Shared between all tests in this class.
+  static Playwright playwright;
+  static Browser browser;
+
+  // New instance for each test method.
+  BrowserContext context;
+  Page page;
+
+  @BeforeAll
+  static void launchBrowser() {
+    playwright = Playwright.create();
+    browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(5000));
+  }
+
+  @AfterAll
+  static void closeBrowser() {
+    playwright.close();
+  }
+
+  @BeforeEach
+  void createContextAndPage() {
+    context = browser.newContext();
+    page = context.newPage();
+  }
+
+  @AfterEach
+  void closeContext() {
+    context.close();
+  }
+
+  @Test
+  void shouldClickButton() {
+    page.navigate("data:text/html,<script>var result;</script><button onclick='result=\"Clicked\"'>Go</button>");
+    page.locator("button").click();
+    assertEquals("Clicked", page.evaluate("result"));
+  }
+
+  @Test
+  void shouldCheckTheBox() {
+    page.setContent("<input id='checkbox' type='checkbox'></input>");
+    page.locator("input").check();
+    assertTrue((Boolean) page.evaluate("() => window['checkbox'].checked"));
+  }
+
+  @Test
+  void shouldSearchWiki() {
+    // page.navigate("https://www.wikipedia.org/");
+    page.navigate("https://maven.org/");
+    // page.locator("input[name=\"search\"]").click();
+    // page.locator("input[name=\"search\"]").fill("playwright");
+    // page.locator("input[name=\"search\"]").press("Enter");
+    // assertEquals("https://en.wikipedia.org/wiki/Playwright", page.url());
+  }
+}
+```
+25. Playwright 操作跟踪，运行后 `trace.zip` 可以使用 `https://trace.playwright.dev/` 打开，或者 `Playwright CLI` 也可以打开 `mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="show-trace trace.zip"`，推荐用 CLI 打开，会启动窗口 `Playwright Trace Viewer`，非常方便
+```java
+package com.company.demo;
+
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.LoadState;
+import com.microsoft.playwright.options.WaitUntilState;
+
+import java.nio.file.Paths;
+import java.util.regex.Pattern;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+public class Demo04 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+      BrowserContext context = browser.newContext();
+
+      // Start tracing before creating / navigating a page.
+      context.tracing().start(new Tracing.StartOptions()
+              .setScreenshots(true)
+              .setSnapshots(true)
+              .setSources(true));
+
+      Page page = context.newPage();
+      page.route("**/*.{png,jpg,jpeg,js}", route -> route. abort());
+      page.navigate("https://playwright.dev", new Page.NavigateOptions().setTimeout(0));
+      page.navigate("https://playwright.dev/java/", new Page.NavigateOptions().setTimeout(0));
+      page.navigate("https://playwright.dev/java/docs/", new Page.NavigateOptions().setTimeout(0));
+
+      // Stop tracing and export it into a zip archive.
+      context.tracing().stop(new Tracing.StopOptions()
+              .setPath(Paths.get("trace.zip")));
+    }
+  }
+}
+```

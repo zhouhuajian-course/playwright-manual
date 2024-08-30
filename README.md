@@ -485,3 +485,36 @@ public class Lesson02 {
   }
 }
 ```
+29. `context.newPage()` 会创建新的标签
+30. 操作已打开的浏览器 `chrome.exe --remote-debugging-port=9222`
+```java
+package learn;
+
+import com.microsoft.playwright.*;
+
+public class Lesson04 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().connectOverCDP("http://localhost:9222/");
+      System.out.println(browser.contexts());
+      BrowserContext defaultContext = browser.contexts().get(0);
+      System.out.println(defaultContext.pages());
+      Page page = defaultContext.pages().get(0);
+      System.out.println(page.title());
+      Page page1 = defaultContext.pages().get(1);
+      System.out.println(page1.title());
+      Page page2 = defaultContext.newPage();
+      page2.navigate("http://localhost/article-add.html");
+      System.out.println(page2.title());
+
+    }
+  }
+}
+/*
+[com.microsoft.playwright.impl.BrowserContextImpl@79079097]
+[com.microsoft.playwright.impl.PageImpl@4d1c00d0, com.microsoft.playwright.impl.PageImpl@4b2bac3f]
+transfer!!!
+slogan!!!
+article-add!!!
+ */
+```

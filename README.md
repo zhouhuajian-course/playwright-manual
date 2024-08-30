@@ -518,7 +518,7 @@ slogan!!!
 article-add!!!
  */
 ```
-31. 操作已打开浏览器 使用 WebSocket `chrome.exe --remote-debugging-port=9222 --enable-logging` `https://github.com/aslushnikov/getting-started-with-cdp/blob/master/README.md` CDP `https://chromedevtools.github.io/devtools-protocol/`
+31. 操作已打开浏览器 使用 WebSocket `chrome.exe --remote-debugging-port=9222 --enable-logging` `https://github.com/aslushnikov/getting-started-with-cdp/blob/master/README.md` `CDP` `https://chromedevtools.github.io/devtools-protocol/`
 ```text
 C:\Program Files\Google\Chrome\Application>chrome.exe --remote-debugging-port=9222 --enable-logging
 

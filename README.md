@@ -518,3 +518,35 @@ slogan!!!
 article-add!!!
  */
 ```
+31. 操作已打开浏览器 使用 WebSocket `chrome.exe --remote-debugging-port=9222 --enable-logging`
+```text
+C:\Program Files\Google\Chrome\Application>chrome.exe --remote-debugging-port=9222 --enable-logging
+
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/bb8ac345-2af0-4dd0-a355-cbe34068f24e
+```
+
+```java
+package learn;
+
+import com.microsoft.playwright.*;
+
+public class Lesson04 {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().connectOverCDP("ws://127.0.0.1:9222/devtools/browser/bb8ac345-2af0-4dd0-a355-cbe34068f24e");
+      System.out.println(browser.contexts());
+      BrowserContext defaultContext = browser.contexts().get(0);
+      System.out.println(defaultContext.pages());
+      Page page = defaultContext.pages().get(0);
+      System.out.println(page.title());
+      Page page2 = defaultContext.newPage();
+      page2.navigate("http://localhost/article-add.html");
+      System.out.println(page2.title());
+    }
+  }
+}
+// [com.microsoft.playwright.impl.BrowserContextImpl@24b1d79b]
+// [com.microsoft.playwright.impl.PageImpl@68ceda24]
+// 新标签页
+// article-add!!!
+```

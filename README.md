@@ -416,7 +416,7 @@ public class Demo04 {
   }
 }
 ```
-26. 录制视频
+26. 录制视频，生成的文件是 `WebM` 格式 `https://www.webmproject.org/` Web Media 的缩写，例如 `661a2bb53b8d154d84029a478c82be43.webm`，默认视频大小是 800 x 450，源码分析得出
 ```java
 package learn;
 

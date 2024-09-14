@@ -550,3 +550,4 @@ public class Lesson04 {
 // 新标签页
 // article-add!!!
 ```
+32. `Codegen` 是 `Code Generator` 的缩写，`Use the codegen command to run the test generator followed by the URL of the website you want to generate tests for. ` 

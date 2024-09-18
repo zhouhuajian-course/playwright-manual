@@ -551,3 +551,45 @@ public class Lesson04 {
 // article-add!!!
 ```
 32. `Codegen` 是 `Code Generator` 的缩写，`Use the codegen command to run the test generator followed by the URL of the website you want to generate tests for. ` 
+33. `browser.newPage()` 是 `browser.newContext()` 然后 `context.newPage()`，也就是 `browser.newPage()` 是便捷方式，单页面的时候比较方便，每次执行都会生成新的 上下文 `context`，一个新的上下文，里面只有一个 `page`。`Creates a new page in a new browser context. Closing this page will close the context as well.
+This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and testing frameworks should explicitly create Browser. newContext() followed by the BrowserContext. newPage() to control their exact life times.`
+```java
+package learn;
+
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.Cookie;
+
+import java.util.Arrays;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+public class Test {
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create()) {
+
+      Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(5000));
+
+      Page page0 = browser.newPage();
+      System.out.println(page0.context());
+
+      BrowserContext context1 = browser.newContext();
+      System.out.println(context1);
+      context1.addCookies(Arrays.asList(new Cookie("uid", "123").setUrl("http://localhost")));
+      Page page1 = context1.newPage();
+      page1.navigate("http://localhost/test");
+
+      BrowserContext context2 = browser.newContext();
+      System.out.println(context2);
+      context2.addCookies(Arrays.asList(new Cookie("uid", "456").setUrl("http://localhost")));
+      Page page2 = context2.newPage();
+      page2.navigate("http://localhost/test");
+    }
+  }
+}
+/*
+com.microsoft.playwright.impl.BrowserContextImpl@281e3708
+com.microsoft.playwright.impl.BrowserContextImpl@76329302
+com.microsoft.playwright.impl.BrowserContextImpl@1e9e725a
+*/
+```

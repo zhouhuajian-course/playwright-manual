@@ -598,3 +598,4 @@ com.microsoft.playwright.impl.BrowserContextImpl@76329302
 com.microsoft.playwright.impl.BrowserContextImpl@1e9e725a
 */
 ```
+34. `Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(5000));` `SlowMo` 是 `slow motion` 慢动作，设置一个时间，操作完一个操作后，暂停具体的时间；注意是操作完后再暂停，不是先暂停再操作；也不是暂停一半，操作，然后再暂停；是先操作，再暂停；可以通过调试的方式，了解这种机制

@@ -578,12 +578,17 @@ public class Test {
       context1.addCookies(Arrays.asList(new Cookie("uid", "123").setUrl("http://localhost")));
       Page page1 = context1.newPage();
       page1.navigate("http://localhost/test");
+      Page page3 = context1.newPage();
+      page3.navigate("http://localhost/test2");
+
 
       BrowserContext context2 = browser.newContext();
       System.out.println(context2);
       context2.addCookies(Arrays.asList(new Cookie("uid", "456").setUrl("http://localhost")));
       Page page2 = context2.newPage();
       page2.navigate("http://localhost/test");
+      Page page4 = context2.newPage();
+      page4.navigate("http://localhost/test2");
     }
   }
 }

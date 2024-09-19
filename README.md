@@ -600,3 +600,17 @@ com.microsoft.playwright.impl.BrowserContextImpl@1e9e725a
 ```
 34. `Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(5000));` `SlowMo` 是 `slow motion` 慢动作，设置一个时间，操作完一个操作后，暂停具体的时间；注意是操作完后再暂停，不是先暂停再操作；也不是暂停一半，操作，然后再暂停；是先操作，再暂停；可以通过调试的方式，了解这种机制
 35. `Use this class to launch playwright cli.` `com.microsoft.playwright.CLI` 用这个类来启动 palywright cli，用这个类可以帮我们做什么事情，例如启动 codegen 工具。
+36. `page.getByXxx()` `page.locator()` 返回的都是 `Locator` 对象，而不是具体的 Element 元素对象，每次操作时，才去真正查找元素，这样的好处的，每次都是操作最新的元素，这一点比 Selenium 好，Selenium 有时会有 `StaleElementReferenceException` 的异常。 `https://playwright.dev/java/docs/locators#locating-elements`
+37. 定位器很严格。  `strict mode` 严格模式，playwright 的 locator 如果定位了多个元素，那么一些操作 例如 `isXxx()` `getAttribute()` `innerText()`，不是默认选择操作第一个，也不是默认操作多个，而是直接抛异常，这个一定要注意。`https://playwright.dev/java/docs/locators#strictness` `Locators are strict. This means that all operations on locators that imply some target DOM element will throw an exception if more than one element matches. For example, the following call throws if there are several buttons in the DOM`，但是适用于多元素的操作是可以的，例如`count()`。严格模式不能调整为非严格模式之类的模式。
+```
+
+Locator locator = page.getByRole(AriaRole.BUTTON);
+locator.isEnabled()
+
+Exception in thread "main" com.microsoft.playwright.PlaywrightException: Error {
+  message='Error: strict mode violation: getByRole(AriaRole.BUTTON) resolved to 3 elements:
+    1) <button disabled class="btn" type="submit" id="signup-btn">注册</button> aka getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("注册"))
+    2) <button class="btn" type="reset">重置</button> aka getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("重置"))
+    3) <a href="#" role="button">搜索</a> aka getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("搜索"))
+
+```

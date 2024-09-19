@@ -614,3 +614,4 @@ Exception in thread "main" com.microsoft.playwright.PlaywrightException: Error {
     3) <a href="#" role="button">搜索</a> aka getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("搜索"))
 
 ```
+38. Locator `first()` `nth(int index)` `last()`，也是返回 Locator，nth() 索引从 0 开始，nth(0) 选择第一个元素。

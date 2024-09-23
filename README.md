@@ -615,3 +615,4 @@ Exception in thread "main" com.microsoft.playwright.PlaywrightException: Error {
 
 ```
 38. Locator `first()` `nth(int index)` `last()`，也是返回 Locator，nth() 索引从 0 开始，nth(0) 选择第一个元素。
+39. `Page.getByText()`，包含给定文本的都会匹配到，例如getByText("注册")，`<button>注册</button>` `<h1>用户注册协议</h1>`，可提供选项进行精准匹配 `page.getByText("注册", new Page.GetByTextOptions().setExact(true))`

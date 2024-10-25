@@ -60,7 +60,65 @@ npx playwright codegen demo.playwright.dev/todomvc
 'assert value'断言某个元素有特定的值
 ```
 22. 完成后关闭 Playwright 检查器窗口或停止终端命令。
-23. 
+23. 运行和调试测试
+```
+使用 Playwright，您可以运行单个测试、一组测试或所有测试。可以使用--project标志在一个或多个浏览器上运行测试。默认情况下，测试并行运行，并以无头方式运行，这意味着在运行测试时不会打开任何浏览器窗口，结果将显示在终端中。但是，您可以使用 CLI 参数在有头模式下运行测试，也可以使用标志在UI 模式--headed下运行测试。查看测试的完整跟踪，包括监视模式、时间旅行调试等。--ui
+```
+24. 您可以使用命令运行测试playwright test。这将在文件中配置的所有浏览器上运行测试playwright.config。测试默认以无头模式运行，这意味着运行测试时不会打开任何浏览器窗口，结果将显示在终端中。
+25. !!! 我们强烈建议您使用UI 模式运行测试，以获得更好的开发人员体验，您可以轻松完成测试的每个步骤，并直观地查看每个步骤之前、期间和之后发生的情况。UI 模式还附带许多其他功能，例如定位器选择器、监视模式等。
+26. 要在有头模式下运行测试，请使用该--headed标志。这将使您能够直观地看到 Playwright 如何与网站互动。npx playwright test --headed
+27. 在不同的浏览器上运行
+```
+要指定您想要在哪个浏览器上运行测试，请使用--project标志后跟浏览器的名称。
+
+npx playwright test --project webkit
+
+要指定多个浏览器来运行测试，请--project多次使用该标志，后跟每个浏览器的名称。
+
+npx playwright test --project webkit --project firefox
+```
+28. Run specific tests 运行特定的测试用例
+```
+To run a single test file, pass in the name of the test file that you want to run.
+
+npx playwright test landing-page.spec.ts
+
+To run a set of test files from different directories, pass in the names of the directories that you want to run the tests in.
+
+npx playwright test tests/todo-page/ tests/landing-page/
+
+To run files that have landing or login in the file name, simply pass in these keywords to the CLI.
+
+npx playwright test landing login
+
+To run a test with a specific title, use the -g flag followed by the title of the test.
+
+npx playwright test -g "add a todo item"
+```
+29. 运行最后失败的测试。要仅运行上次测试运行中失败的测试，请先运行测试，然后使用--last-failed标志再次运行它们。npx playwright test --last-failed
+30. 在 VS Code `https://playwright.dev/docs/getting-started-vscode`
+```
+可以使用VS Code 扩展直接从 VS Code 运行测试。安装后，您只需单击要运行的测试旁边的绿色三角形，或从测试侧栏运行所有测试即可。查看我们的VS Code 入门指南了解更多详细信息。
+```
+31. !!! 我们强烈建议您使用UI 模式调试测试，以获得更好的开发人员体验，您可以轻松完成测试的每个步骤，并直观地查看每个步骤之前、期间和之后发生的情况。UI 模式还附带许多其他功能，例如定位器选择器、监视模式等。
+32. !!! 使用 Playwright 调试
+```
+要调试所有测试，请运行 Playwright 测试命令，然后运行--debug标志。
+
+npx playwright test --debug
+```
+33. 调试方式 使用VS Code 调试器、UI 模式和Playwright Inspector进行调试以及使用浏览器开发人员工具进行调试
+34. npx playwright show-report name-of-my-extracted-playwright-report
+35. VS Code 扩展  `Playwright Test for VSCode`
+```
+安装后，打开命令面板并输入：
+
+Install Playwright
+
+```
+
 todo npm init playwright@latest
 npx playwright test --ui
+或从测试侧栏运行所有测试即可
 
+spec
